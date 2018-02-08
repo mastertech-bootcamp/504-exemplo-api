@@ -1,6 +1,7 @@
 const express = require('express');
 const expressMongoDb = require('express-mongo-db');
 const bodyParser = require('body-parser');
+const ObjectID = require('mongodb').ObjectID;
 
 const app = express();
 
@@ -15,11 +16,33 @@ app.get('/clientes', (req, res) => {
     });
 });
 
+app.get('/cliente/:id', (req, res) => {
+    let busca = {
+        _id: new ObjectID(req.params.id)
+    };
+
+    req.db.collection('clientes')
+    .findOne(busca, (err, data) => {
+        res.send(data);
+    });
+});
+
 app.post('/clientes', (req, res) => {
     console.log(req.body);
 
+    if(!req.body.nome || !req.body.email){
+        res.status(400).send({'error': 'Nome e email são obrigatórios'});
+        return;
+    }
+
+    let cliente = {
+        nome: req.body.nome,
+        email: req.body.email,
+        telefone: req.body.telefone
+    }
+
     req.db.collection('clientes')
-    .insert(req.body, (err, data) => {
+    .insert(cliente, (err, data) => {
         res.send(data);
     });
 });
