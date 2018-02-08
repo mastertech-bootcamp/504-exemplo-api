@@ -1,12 +1,14 @@
 const express = require('express');
 const expressMongoDb = require('express-mongo-db');
 const bodyParser = require('body-parser');
+const cors = require('cors')
 const ObjectID = require('mongodb').ObjectID;
 
 const app = express();
 
 app.use(expressMongoDb('mongodb://localhost/walter-admin'));
 app.use(bodyParser.json());
+app.use(cors());
 
 app.get('/clientes', (req, res) => {
     req.db.collection('clientes')
