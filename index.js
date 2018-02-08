@@ -1,9 +1,11 @@
 const express = require('express');
 const expressMongoDb = require('express-mongo-db');
+const bodyParser = require('body-parser');
 
 const app = express();
 
 app.use(expressMongoDb('mongodb://localhost/walter-admin'));
+app.use(bodyParser.json());
 
 app.get('/clientes', (req, res) => {
     req.db.collection('clientes')
@@ -14,8 +16,10 @@ app.get('/clientes', (req, res) => {
 });
 
 app.post('/clientes', (req, res) => {
+    console.log(req.body);
+
     req.db.collection('clientes')
-    .insert({"nome": "Xablau"}, (err, data) => {
+    .insert(req.body, (err, data) => {
         res.send(data);
     });
 });
